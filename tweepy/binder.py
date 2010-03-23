@@ -172,6 +172,14 @@ def bind_api(**config):
             return result
 
 
+    def docadd(doc):
+        ''' Add docstring to API function '''
+        def wrapped(func):
+            func.__doc__ = doc
+            return func
+        return wrapped
+
+    @docadd(config.get('docstring',''))
     def _call(api, *args, **kargs):
 
         method = APIMethod(api, args, kargs)
