@@ -33,6 +33,17 @@ class API(object):
 
     """ statuses/public_timeline """
     public_timeline = bind_api(
+        docstring = """
+        public_timeline():
+
+        statuses/public_timeline
+        Returns the 20 most recent statuses from non-protected users who
+        have set a custom user icon. The public timeline is cached for 60
+        seconds so requesting it more often than that is a waste of resources.
+
+        Output:
+        list of Status
+        """,
         path = '/statuses/public_timeline.json',
         payload_type = 'status', payload_list = True,
         allowed_param = []
@@ -40,6 +51,31 @@ class API(object):
 
     """ statuses/home_timeline """
     home_timeline = bind_api(
+        docstring = """
+        home_timeline(since_id=None, max_id=None, count=None, page=None)
+
+        statuses/home_timeline
+        Returns the 20 most recent statuses, including retweets, posted by
+        the authenticating user and that user's friends. This is the equivalent
+        of /timeline/home on the Web.
+        Usage note: This home_timeline is identical to statuses/friends_timeline
+        except it also contains retweets, which statuses/friends_timeline does
+        not (for backwards compatibility reasons). In a future version of the
+        API, statuses/friends_timeline will go away and be replaced by
+        home_timeline.
+
+        Input:
+        since_id (Opt) Only statuses with an ID greater than (that is, more
+                       recent than) the specified ID. ()
+        max_id (Opt) Only statuses with an ID less than (that is, older than) or
+                     equal to the specified ID. 
+        count (Opt) Specifies the number of statuses to retrieve. May not be
+                    greater than 200.
+        page (Opt) Specifies the page of results to retrieve.
+        
+        Output:
+        list of Status
+        """,
         path = '/statuses/home_timeline.json',
         payload_type = 'status', payload_list = True,
         allowed_param = ['since_id', 'max_id', 'count', 'page'],
@@ -274,6 +310,20 @@ class API(object):
 
     """ account/rate_limit_status """
     rate_limit_status = bind_api(
+        docstring = """
+        rate_limit_status():
+
+        account/rate_limit_status
+        Returns the remaining number of API requests available to the
+        requesting user before the API limit is reached for the current hour.
+        Calls to rate_limit_status do not count against the rate limit.
+        If authentication credentials are provided, the rate limit status for
+        the authenticating user is returned.  Otherwise, the rate limit status
+        for the requester's IP address is returned.
+
+        Output:
+        json of reset_time, remaining_hits, hourly_limit, reset_time_in_seconds
+        """,
         path = '/account/rate_limit_status.json',
         payload_type = 'json'
     )
