@@ -643,6 +643,22 @@ class API(object):
 
     """ trends/available """
     trends_available = bind_api(
+        docstring = """
+        trends_available(lat=None, long=None)
+
+        trends/available:
+        Returns the locations that Twitter has trending topic information
+        for. The response is an array of 'locations' that encode the
+        location's WOEID (a Yahoo! Where On Earth ID) and some other
+        human-readable information such as a canonical name and country
+        the location belongs in.
+
+        Input:
+        lat  (Opt)  If passed in conjunction with 'long', then the available
+                    trend locations will be sorted by distance to the 'lat'
+                    and 'long' passed in.  The sort is nearest to furthest.
+        long  (Opt) See lat.
+        """,
         path = '/trends/available.json',
         payload_type = 'json',
         allowed_param = ['lat', 'long']
@@ -650,6 +666,23 @@ class API(object):
 
     """ trends/location """
     trends_location = bind_api(
+        docstring = """
+        trends_location(woeid):
+
+        trends/location
+        Returns the top 10 trending topics for a specific location
+        Twitter has trending topic information for. The response is
+        an array of 'trend' objects that encode the name of the trending
+        topic, the query parameter that can be used to search for the
+        topic on Search, and the direct URL that can be issued against
+        Search. This information is cached for five minutes, and therefore
+        users are discouraged from querying these endpoints faster than once
+        every five minutes.  Global trends information is also available
+        from this API by using a WOEID of 1.
+
+        Input:
+        woeid : The WOEID of the location to be querying for. (integer)
+        """,
         path = '/trends/{woeid}.json',
         payload_type = 'json',
         allowed_param = ['woeid']
