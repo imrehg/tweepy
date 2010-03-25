@@ -695,6 +695,124 @@ class API(object):
         allowed_param = ['date', 'exclude']
     )
 
+    """ geo/nearby_places """
+    geo_nearby_places = bind_api(
+        docstring = """
+        geo_nearby_places(lat=None, long=None, ip=None, accuracy=None,
+                          granularity=None, max_results=None)
+
+        geo/nearby_places:
+        Search for places (cities and neighborhoods) that can be attached
+        to a statuses/update.  Given a latitude and a longitude pair, or
+        an IP address, return a list of all the valid cities and neighborhoods
+        that can be used as a place_id when updating a status.  Conceptually,
+        a query can be made from the user's location, retrieve a list of places,
+        have the user validate the location he or she is at, and then send the
+        ID of this location up with a call to statuses/update.
+
+        There are multiple granularities of places that can be returned --
+        'neighborhoods', 'cities', etc.  At this time, only United States
+        data is available through this method.
+
+        This is the recommended method to use find places that can be attached
+        to statuses/update.  Unlike geo/reverse_geocode which provides raw data
+        access, this endpoint can potentially re-order places with regards to
+        the user who is authenticated.
+
+        Input:
+        lat (Opt. but required if long provided or if ip is not provided) The
+            latitude to query about.  Valid ranges are -90.0 to +90.0 (North is
+            positive) inclusive.
+        long (Opt. but required if lat provided or if ip is not provided) The
+            longitude to query about.  Valid ranges are -180.0 to +180.0
+            (East is positive) inclusive.
+        ip  (Optional but required if lat and long are not provided) The IP
+            address that the call is coming from. Twitter will geo-IP the
+            address.
+        accuracy (Opt) A hint on the 'region' in which to search.  If a number,
+            then this is a radius in meters, but it can also take a string that
+            is suffixed with ft to specify feet.  If this is not passed in, then
+            it is assumed to be 0m. If coming from a device, in practice, this
+            value is whatever accuracy the device has measuring its location
+            (whether it be coming from a GPS, WiFi triangulation, etc.).
+        granularity (Opt) The minimal granularity of data to return. If this is
+            not passed in, then neighborhood is assumed.  City can also be
+            passed.
+        max_results (Opt) A hint as to the number of results to return. This
+            does not guarantee that the number of results returned will equal
+            max_results, but instead informs how many 'nearby' results to
+            return.  Ideally, only pass in the number of places you intend to
+            display to the user here.
+        """,
+        path = '/geo/nearby_places.json',
+        payload_type = 'json',
+        allowed_param = ['lat', 'long', 'ip', 'accuracy', 'granularity',
+                         'max_results'],
+    )
+
+    """ geo/reverse_geocode """
+    geo_reverse_geocode = bind_api(
+        docstring = """
+        Search for places (cities and neighborhoods) that can be attached
+        to a statuses/update.  Given a latitude and a longitude, return a
+        list of all the valid places that can be used as a place_id when
+        updating a status.  Conceptually, a query can be made from the user's
+        location, retrieve a list of places, have the user validate the
+        location he or she is at, and then send the ID of this location up
+        with a call to statuses/update.
+
+        There are multiple granularities of places that can be returned --
+        'neighborhoods', 'cities', etc.  At this time, only United States
+        data is available through this method.
+
+        This API call is meant to be an informative call and will deliver
+        generalized results about geography.  It is recommended that clients
+        use the geo/nearby_places call.
+
+        Input:
+        lat : The latitude to query about.  Valid ranges are -90.0 to +90.0
+              (North is positive) inclusive.
+        long : The longitude to query about.  Valid ranges are -180.0 to
+              +180.0 (East is positive) inclusive.
+        accuracy (Opt) A hint on the 'region' in which to search.  If a
+              number, then this is a radius in meters, but it can also take
+              a string that is suffixed with ft to specify feet.  If this is
+              not passed in, then it is assumed to be 0m.  If coming from a
+              device, in practice, this value is whatever accuracy the device
+              has measuring its location (whether it be coming from a GPS,
+              WiFi triangulation, etc.).
+        granularity (Opt) The minimal granularity of data to return. If this
+              is not passed in, then neighborhood is assumed.  city can also
+              be passed.
+        max_results (Opt) A hint as to the number of results to return. This
+              does not guarantee that the number of results returned will
+              equal max_results, but instead informs how many 'nearby' results
+              to return.  Ideally, only pass in the number of places you intend
+              to display to the user here.
+        """,
+        path = '/geo/reverse_geocode.json',
+        payload_type = 'json',
+        allowed_param = ['lat', 'long', 'accuracy', 'granularity', 'max_results']
+    )
+
+    """ geo/id """
+    geo_id = bind_api(
+        docstring = """
+        geo_id(id):
+
+        geo/id
+        Find out more details of a place that was returned from the
+        geo/reverse_geocode method.
+
+        Input:
+        id : The ID of the location to query about.
+        """,
+        path = '/geo/id/{id}.json',
+        method = 'GET',
+        payload_type = 'json',
+        allowed_param = ['id']
+    )
+
     """ Internal use only """
     @staticmethod
     def _pack_image(filename, max_size):
